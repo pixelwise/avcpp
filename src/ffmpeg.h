@@ -11,7 +11,7 @@ extern "C"
 #include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
 #include <libavdevice/avdevice.h>
-#include <libswscale/swscale.h>
+//#include <libswscale/swscale.h>
 #include <libswresample/swresample.h>
 #include <libavformat/version.h>
 }

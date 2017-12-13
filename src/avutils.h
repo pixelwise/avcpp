@@ -121,13 +121,14 @@ struct EmptyDeleter
  */
 struct AvDeleter
 {
+#if 0
     bool operator() (SwsContext* &swsContext)
     {
         sws_freeContext(swsContext);
         swsContext = 0;
         return true;
     }
-
+#endif
 
     bool operator() (AVCodecContext* &codecContext)
     {
