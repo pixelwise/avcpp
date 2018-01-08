@@ -8,7 +8,7 @@
 #include "ffmpeg.h"
 #include "codec.h"
 #include "packet.h"
-#include "videorescaler.h"
+//#include "videorescaler.h"
 #include "audioresampler.h"
 #include "avutils.h"
 
