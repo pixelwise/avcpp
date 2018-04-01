@@ -47,8 +47,10 @@ public:
         av_frame_free(&m_raw);
     }
 
-    Frame(const AVFrame *frame) {
-        if (frame) {
+    Frame(const AVFrame *frame)
+    {
+        if (frame)
+        {
             m_raw = av_frame_alloc();
             m_raw->opaque = this;
             av_frame_ref(m_raw, frame);
@@ -56,13 +58,16 @@ public:
     }
 
     // Helper ctors to implement move/copy ctors
-    Frame(const T& other) : Frame(other.m_raw) {
+    Frame(const T& other) : Frame(other.m_raw)
+    {
         if (m_raw)
             copyInfoFrom(other);
     }
 
-    Frame(T&& other) : FFWrapperPtr<AVFrame>(nullptr) {
-        if (other.m_raw) {
+    Frame(T&& other) : FFWrapperPtr<AVFrame>(nullptr)
+    {
+        if (other.m_raw)
+        {
             m_raw = av_frame_alloc();
             m_raw->opaque = this;
             av_frame_move_ref(m_raw, other.m_raw);
@@ -88,7 +93,8 @@ public:
 #undef FRAME_SWAP
     }
 
-    void copyInfoFrom(const T& other) {
+    void copyInfoFrom(const T& other)
+    {
         m_timeBase    = other.m_timeBase;
         m_streamIndex = other.m_streamIndex;
         m_isComplete  = other.m_isComplete;
