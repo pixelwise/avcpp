@@ -496,7 +496,8 @@ public:
 
     bool decode(
         const Packet &packet,
-        VideoFrame& out_frame
+        VideoFrame& out_frame,
+        OptionalErrorCode ec = throws()
     );
 
     /**
@@ -525,6 +526,13 @@ private:
                            size_t *decodedBytes,
                            bool    autoAllocateFrame);
 
+    bool decodeVideo(
+        OptionalErrorCode ec,
+        const Packet &packet,
+        size_t offset,
+        size_t *decodedBytes,
+        VideoFrame& out_frame
+    );
 };
 
 

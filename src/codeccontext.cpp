@@ -153,9 +153,24 @@ VideoFrame VideoDecoderContext::decode(const Packet &packet, OptionalErrorCode e
     return decodeVideo(ec, packet, 0, nullptr, autoAllocateFrame);
 }
 
-VideoFrame VideoDecoderContext::decode(const Packet &packet, size_t offset, size_t &decodedBytes, OptionalErrorCode ec, bool autoAllocateFrame)
+VideoFrame VideoDecoderContext::decode(
+    const Packet &packet,
+    size_t offset,
+    size_t &decodedBytes,
+    OptionalErrorCode ec,
+    bool autoAllocateFrame
+)
 {
     return decodeVideo(ec, packet, offset, &decodedBytes, autoAllocateFrame);
+}
+
+bool VideoDecoderContext::decode(
+    const Packet &packet,
+    VideoFrame& out_frame,
+    OptionalErrorCode ec
+)
+{
+    return decodeVideo(ec, packet, 0, 0, out_frame);
 }
 
 VideoFrame VideoDecoderContext::decodeVideo(
@@ -180,23 +195,37 @@ VideoFrame VideoDecoderContext::decodeVideo(
         }
     }
 
+    if (decodeVideo(ec, packet, offset, decodedBytes, outFrame))
+        return outFrame;
+    else
+        return {};
+}
+
+bool VideoDecoderContext::decodeVideo(
+    OptionalErrorCode ec,
+    const Packet &packet,
+    size_t offset,
+    size_t *decodedBytes,
+    VideoFrame& out_frame
+)
+{
     int gotFrame = 0;
-    auto st = decodeCommon(outFrame, packet, offset, gotFrame, avcodec_decode_video_legacy);
+    auto st = decodeCommon(out_frame, packet, offset, gotFrame, avcodec_decode_video_legacy);
 
     if (get<1>(st)) {
         throws_if(ec, get<0>(st), *get<1>(st));
-        return VideoFrame();
+        return false;
     }
 
     if (!gotFrame)
-        return VideoFrame();
+        return false;
 
-    outFrame.setPictureType(AV_PICTURE_TYPE_I);
+    out_frame.setPictureType(AV_PICTURE_TYPE_I);
 
     if (decodedBytes)
         *decodedBytes = get<0>(st);
 
-    return outFrame;
+    return out_frame;    
 }
 
 VideoEncoderContext::VideoEncoderContext(VideoEncoderContext &&other)
