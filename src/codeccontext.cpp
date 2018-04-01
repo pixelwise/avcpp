@@ -158,7 +158,13 @@ VideoFrame VideoDecoderContext::decode(const Packet &packet, size_t offset, size
     return decodeVideo(ec, packet, offset, &decodedBytes, autoAllocateFrame);
 }
 
-VideoFrame VideoDecoderContext::decodeVideo(OptionalErrorCode ec, const Packet &packet, size_t offset, size_t *decodedBytes, bool autoAllocateFrame)
+VideoFrame VideoDecoderContext::decodeVideo(
+    OptionalErrorCode ec,
+    const Packet &packet,
+    size_t offset,
+    size_t *decodedBytes,
+    bool autoAllocateFrame
+)
 {
     clear_if(ec);
 

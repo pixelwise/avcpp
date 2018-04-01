@@ -494,6 +494,11 @@ public:
                       OptionalErrorCode ec = throws(),
                       bool             autoAllocateFrame = true);
 
+    bool decode(
+        const Packet &packet,
+        VideoFrame& out_frame
+    );
+
     /**
      * @brief decodeVideo - decode video packet with additional parameters
      *
@@ -512,7 +517,6 @@ public:
                       size_t &decodedBytes,
                       OptionalErrorCode ec = throws(),
                       bool    autoAllocateFrame = true);
-
 
 private:
     VideoFrame decodeVideo(OptionalErrorCode ec,

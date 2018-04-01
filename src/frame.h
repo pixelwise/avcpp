@@ -272,10 +272,17 @@ public:
 
     VideoFrame() = default;
     VideoFrame(PixelFormat pixelFormat, int width, int height, int align = 1);
-    VideoFrame(const uint8_t *data, size_t size, PixelFormat pixelFormat, int width, int height, int align = 1);
 
     VideoFrame(const VideoFrame &other);
     VideoFrame(VideoFrame &&other);
+
+    VideoFrame(
+        uint8_t *data,
+        PixelFormat pixelFormat,
+        size_t width,
+        size_t height,
+        size_t align = 1
+    );
 
     VideoFrame& operator=(const VideoFrame &rhs);
     VideoFrame& operator=(VideoFrame &&rhs);
@@ -295,6 +302,8 @@ public:
 
     Rational               sampleAspectRatio() const;
     void                   setSampleAspectRatio(const Rational& sampleAspectRatio);
+private:
+    bool _foreign_data{false};
 };
 
 // Be a little back compat

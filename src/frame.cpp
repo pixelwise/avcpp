@@ -94,21 +94,27 @@ VideoFrame::VideoFrame(PixelFormat pixelFormat, int width, int height, int align
     av_frame_get_buffer(m_raw, align);
 }
 
-VideoFrame::VideoFrame(const uint8_t *data, size_t size, PixelFormat pixelFormat, int width, int height, int align)
-    : VideoFrame(pixelFormat, width, height, align)
+VideoFrame::VideoFrame(
+    uint8_t *data,
+    PixelFormat pixelFormat,
+    size_t width,
+    size_t height,
+    size_t align
+)
+: _foreign_data{true}
 {
-    size_t calcSize = av_image_get_buffer_size(pixelFormat, width, height, align);
-    if (calcSize != size)
-        throw length_error("Data size and required buffer for this format/width/height/align not equal");
-
-    uint8_t *buf[4];
-    int      linesize[4];
-    av_image_fill_arrays(buf, linesize, data, pixelFormat, width, height, align);
-
-    // copy data
-    for (size_t i = 0; i < 4 && buf[i]; ++i) {
-        std::copy(buf[i], buf[i]+linesize[i], m_raw->data[i]);
-    }
+    m_raw->format = pixelFormat;
+    m_raw->width  = width;
+    m_raw->height = height;
+    av_image_fill_arrays(
+        m_raw->data,
+        m_raw->linesize,
+        data,
+        pixelFormat,
+        width,
+        height,
+        align
+    );
 }
 
 VideoFrame::VideoFrame(const VideoFrame &other)
