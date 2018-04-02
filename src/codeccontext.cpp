@@ -80,9 +80,11 @@ int encode(AVCodecContext *avctx,
     return 0;
 }
 
-int avcodec_decode_video_legacy(AVCodecContext *avctx, AVFrame *picture,
-                                int *got_picture_ptr,
-                                const AVPacket *avpkt)
+int avcodec_decode_video_legacy(
+    AVCodecContext *avctx,
+    AVFrame *picture,
+    int *got_picture_ptr,
+    const AVPacket *avpkt)
 {
     return decode(avctx, picture, got_picture_ptr, avpkt);
 }
@@ -319,6 +321,16 @@ CodecContext2::CodecContext2(const Stream &st, const Codec &codec, Direction dir
         avcodec_parameters_to_context(m_raw, st.raw()->codecpar);
     }
 #endif
+}
+
+CodecContext2::CodecContext2(
+    const Codec &codec,
+    const AVCodecParameters* parameters
+)
+{
+    m_raw = avcodec_alloc_context3(codec.raw());
+    if (m_raw)
+        avcodec_parameters_to_context(m_raw, parameters);
 }
 
 CodecContext2::CodecContext2(const Codec &codec, Direction direction, AVMediaType type)

@@ -35,10 +35,17 @@ protected:
     CodecContext2();
 
     // Stream decoding/encoding
-    CodecContext2(const Stream &st,
-                     const Codec& codec,
-                     Direction direction,
-                     AVMediaType type);
+    CodecContext2(
+        const Stream &st,
+        const Codec& codec,
+        Direction direction,
+        AVMediaType type
+    );
+
+    CodecContext2(
+        const Codec &codec,
+        const AVCodecParameters* parameters
+    );
 
     // Stream independ decoding/encoding
     CodecContext2(const Codec &codec, Direction direction, AVMediaType type);
@@ -296,22 +303,23 @@ public:
     using CodecContext2::_log;
 
     CodecContextBase()
-        : CodecContext2()
+    : CodecContext2()
     {
     }
 
-    // Stream decoding/encoding
     explicit CodecContextBase(const Stream &st, const Codec& codec = Codec())
-        : CodecContext2(st, codec, _direction, _type)
+    : CodecContext2(st, codec, _direction, _type)
     {
     }
 
-    // Stream independ decoding/encoding
-    explicit CodecContextBase(const Codec &codec)
-        : CodecContext2(codec, _direction, _type)
+    explicit CodecContextBase(const Codec& codec, const AVCodecParameters* parameters)
+    : CodecContext2(codec, parameters)
     {
-        if (checkCodec(codec, _direction, _type, throws()))
-            m_raw = avcodec_alloc_context3(codec.raw());
+    }
+
+    explicit CodecContextBase(const Codec &codec)
+    : CodecContext2(codec, _direction, _type)
+    {
     }
 
     //
